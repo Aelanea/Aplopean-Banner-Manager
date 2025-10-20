@@ -8,5 +8,3 @@ Set & Reset banners: Easily select or remove banners.
 
 
 Sectioned organization: Automatically separates World, Module, and System compendiums for easy navigation.
-
-Responsive design: Flexible layout scales beautifully on all screen sizes.
