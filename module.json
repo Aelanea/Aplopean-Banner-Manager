@@ -1,0 +1,22 @@
+{
+  "id": "aplopean-banner-manager",
+  "title": "Aplopean Banner Manager",
+  "description": "<p>Transform your compendium sidebar with a images. Assign custom banners to your World, Module, or System compendiums.</p>",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [
+    {
+      "name": "Aelanea",
+      "flags": {}
+    }
+  ],
+  "license": "MIT",
+  "scripts": [
+    "scripts/banner-manager.js"
+  ],
+  "manifest": "modules/aplopean-banner-manager/module.json",
+  "flags": {}
+}
