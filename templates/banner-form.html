@@ -1,0 +1,202 @@
+<form class="abm-form">
+  <header class="abm-header">
+    <h2>Aplopean Banner Manager</h2>
+    <p>Assign custom banners to your compendiums. Use <strong>the Folder Icon</strong> to pick images, then <strong>Save</strong>, the red button restarts the image to the original one, needs f5 to apply.</p>
+  </header>
+
+  {{#each sections}}
+  <button type="button" class="toggle-section" data-target="{{id}}">
+    <span>{{label}} ({{packs.length}})</span>
+    <i class="fas fa-chevron-down"></i>
+  </button>
+
+  <div id="{{id}}" class="section-content">
+    {{#if packs.length}}
+      {{#each packs}}
+      <div class="banner-row" data-pack="{{id}}">
+        <div class="pack-label">{{label}}</div>
+        <div class="pack-controls">
+          <input type="text" name="{{id}}" value="{{current}}" placeholder="path/to/banner.png">
+          <select class="class-override" name="{{id}}__override" data-pack="{{id}}">
+            <option value="Auto" {{#if (eq override "Auto")}}selected{{/if}}>Auto</option>
+            <option value="World" {{#if (eq override "World")}}selected{{/if}}>World</option>
+            <option value="Module" {{#if (eq override "Module")}}selected{{/if}}>Module</option>
+            <option value="System" {{#if (eq override "System")}}selected{{/if}}>System</option>
+          </select>
+          <button type="button" class="file-picker" data-target="{{id}}">
+            <i class="fas fa-folder-open"></i>
+          </button>
+          <button type="button" class="reset-btn" data-target="{{id}}">
+            <i class="fas fa-undo"></i>
+          </button>
+          <img src="{{current}}" class="banner-preview" onerror="this.style.display='none'">
+        </div>
+      </div>
+      {{/each}}
+    {{else}}
+      <div class="no-packs">No compendiums found in this section.</div>
+    {{/if}}
+  </div>
+  {{/each}}
+
+  <footer class="abm-footer">
+    <button type="submit">Save</button>
+  </footer>
+</form>
+
+<style>
+/* Container & Header */
+.abm-form {
+  font-family: "Inter","Roboto","Helvetica",sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+  width: 100%;
+  background: #0f1a2b; /* Dark bluish background */
+  padding: 1em 1.2em;
+  border-radius: 12px;
+}
+.abm-header h2 {
+  color: #4dc1ff; /* celestial blue */
+  font-size: 1.9em;
+  margin: 0 0 0.3em 0;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.abm-header p {
+  color: #ffffff;
+  font-size: 1em;
+  text-align: center;
+  margin: 0;
+}
+
+/* Sections */
+.toggle-section {
+  width: 100%;
+  padding: 0.65em 1em;
+  background: linear-gradient(90deg, #1b2638, #22304d);
+  color: #ffb347;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  transition: all 0.2s;
+}
+.toggle-section:hover { filter: brightness(1.08); }
+
+.section-content { display: flex; flex-direction: column; gap: 0.7em; margin-top: 0.5em; }
+
+/* Banner Row */
+.banner-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+  padding: 0.65em;
+  border-radius: 10px;
+  background: #1c2a44;
+  border: 1px solid #333;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.35);
+  transition: all 0.25s;
+}
+.banner-row:hover {
+  background: #25355b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.45);
+}
+.pack-label { font-weight: 600; color: #eee; font-size: 1em; }
+
+/* Controls Flex */
+.pack-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  align-items: center;
+}
+.pack-controls input[type=text] {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.45em 0.7em;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1e2a3a;
+  color: #fff;
+  font-size: 0.95em;
+  transition: border 0.2s;
+}
+.pack-controls input:focus {
+  outline: none;
+  border-color: #ffb347;
+  box-shadow: 0 0 0 3px rgba(255,179,71,0.2);
+}
+.pack-controls select {
+  padding: 0.38em 0.55em;
+  border-radius: 6px;
+  background: #ffb347;
+  color: #000;
+  border: 1px solid #555;
+}
+.pack-controls select:focus {
+  outline: none;
+  border-color: #ffb347;
+  box-shadow: 0 0 0 2px rgba(255,179,71,0.12);
+}
+.pack-controls button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  font-weight: bold;
+  border: none;
+  transition: all 0.15s;
+}
+.pack-controls button:hover { filter: brightness(1.12); cursor: pointer; }
+.file-picker { background: #ffb347; color: #111; }
+.reset-btn { background: #880000; color: #fff; }
+.pack-controls button i { font-size: 1.1em; }
+
+/* Preview Image */
+.banner-preview {
+  height: 70px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  object-fit: cover;
+  display: block;
+  transition: all 0.25s ease;
+}
+
+/* No Packs */
+.no-packs {
+  padding: 0.8em;
+  border-radius: 8px;
+  background: #1c2a44;
+  color: #aaa;
+  border: 1px dashed #333;
+  text-align: center;
+  font-size: 0.95em;
+}
+
+/* Footer */
+.abm-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1em;
+}
+.abm-footer button {
+  padding: 0.75em 1.4em;
+  border-radius: 10px;
+  background: #350c67;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  font-size: 1.05em;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.35);
+  transition: all 0.2s;
+}
+.abm-footer button:hover { filter: brightness(1.1); }
+</style>
