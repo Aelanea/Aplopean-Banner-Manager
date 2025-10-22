@@ -6,7 +6,7 @@
     "url": "https://github.com/Aelanea/Aplopean-Banner-Manager",
     "readme": "https://github.com/Aelanea/Aplopean-Banner-Manager/blob/main/README.md",
     "manifest": "https://github.com/Aelanea/Aplopean-Banner-Manager/blob/main/module.json",
-    "download": "https://github.com/Aelanea/Aplopean-Banner-Manager/releases/download/1.0.1/module.zip",
+    "download": "https://github.com/Aelanea/Aplopean-Banner-Manager/releases/download/1.0.1/module.zip", 
     "changelog": "https://github.com/Aelanea/Aplopean-Banner-Manager/blob/main/CHANGELOG.md",
   "compatibility": {
     "minimum": "13",
@@ -22,6 +22,5 @@
   "scripts": [
     "scripts/banner-manager.js"
   ],
-  "manifest": "modules/aplopean-banner-manager/module.json",
   "flags": {}
 }
