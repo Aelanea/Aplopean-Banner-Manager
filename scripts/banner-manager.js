@@ -29,26 +29,27 @@ class AplopeanBannerManager extends FormApplication {
 
     const banners = game.settings.get("aplopean-banner-manager", "banners") || {};
     const overrides = game.settings.get("aplopean-banner-manager", "classOverrides") || {};
+    const sectionStates = game.settings.get("aplopean-banner-manager", "sectionStates") || {};
 
     for (const p of packs) {
       // SORTING LOGIC 
       const src = p.metadata.packageType || p.metadata.package;
-      let type = "module";
-      if (src === "world") type = "world";
-      else if (src === "system") type = "system";
-
-      const bannerPath = banners[p.metadata.id] || "";
-      const override = overrides[p.metadata.id] || "Auto";
+      let type = overrides[p.metadata.id] && overrides[p.metadata.id] !== "Auto" ? overrides[p.metadata.id].toLowerCase() : (src === "world" ? "world" : src === "system" ? "system" : "module");
 
       sections[type].packs.push({
         id: p.metadata.id,
         label: p.metadata.label,
-        current: bannerPath,
-        override
+        current: banners[p.metadata.id] || "",
+        override: overrides[p.metadata.id] || "Auto"
       });
     }
 
-    return { sections: Object.values(sections) };
+    return { 
+      sections: Object.values(sections).map(section => ({
+        ...section,
+        isOpen: sectionStates[section.id] !== false // Default to open if not set
+      }))
+    };
   }
 
   activateListeners(html) {
@@ -72,9 +73,24 @@ class AplopeanBannerManager extends FormApplication {
     });
 
     // Toggle sections
-    html.find(".toggle-section").on("click", ev => {
+    html.find(".toggle-section").on("click", async ev => {
       const targetId = $(ev.currentTarget).data("target");
-      html.find(`#${targetId}`).slideToggle(160);
+      const section = html.find(`#${targetId}`);
+      const isOpen = section.is(":visible");
+      section.slideToggle(160);
+
+      // Save section state
+      const sectionStates = game.settings.get("aplopean-banner-manager", "sectionStates") || {};
+      sectionStates[targetId] = !isOpen;
+      await game.settings.set("aplopean-banner-manager", "sectionStates", sectionStates);
+    });
+
+    // Set initial section visibility
+    const sectionStates = game.settings.get("aplopean-banner-manager", "sectionStates") || {};
+    Object.keys(sectionStates).forEach(id => {
+      if (sectionStates[id] === false) {
+        html.find(`#${id}`).hide();
+      }
     });
 
     // Override dropdown visual
@@ -107,8 +123,13 @@ class AplopeanBannerManager extends FormApplication {
     for (const [key, value] of Object.entries(formData)) {
       if (key.endsWith("__override")) {
         const packId = key.slice(0, -10);
-        if (value && value !== "Auto") overrides[packId] = value;
-        else delete overrides[packId];
+        if (value && value !== "Auto") {
+          overrides[packId] = value;
+          const pack = game.packs.get(packId);
+          if (pack) pack.metadata.packageType = value.toLowerCase(); // Update compendium type
+        } else {
+          delete overrides[packId];
+        }
         continue;
       }
       if (value) banners[key] = value;
@@ -125,6 +146,9 @@ class AplopeanBannerManager extends FormApplication {
     }
 
     ui.notifications.info("Banners and overrides saved.");
+
+    // Refresh form to reflect new categorization
+    this.render(true);
 
     // Refresh sidebar correctly
     if (ui.compendium?.rendered) ui.compendium.render(true);
@@ -145,6 +169,7 @@ Hooks.once("ready", () => {
 Hooks.once("init", () => {
   game.settings.register("aplopean-banner-manager", "banners", { scope: "world", config: false, type: Object, default: {} });
   game.settings.register("aplopean-banner-manager", "classOverrides", { scope: "world", config: false, type: Object, default: {} });
+  game.settings.register("aplopean-banner-manager", "sectionStates", { scope: "world", config: false, type: Object, default: {} });
 
   game.aplopeanBannerManager = new AplopeanBannerManager();
   game.settings.registerMenu("aplopean-banner-manager", "openManager", {
@@ -159,7 +184,7 @@ Hooks.once("init", () => {
 /** Update sidebar when rendered */
 Hooks.on("renderCompendiumDirectory", (directory, html) => {
   const banners = game.settings.get("aplopean-banner-manager", "banners") || {};
-  html.find(".directory-card").each((i, el) => {
+  $(html).find(".directory-card").each((i, el) => {
     const packName = el.dataset.pack;
     const banner = banners[packName];
     if (banner) $(el).find(".directory-card-image").attr("src", banner);
