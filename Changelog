@@ -1,0 +1,9 @@
+[1.0.0] - 2025-10-22
+Added
+
+Initial release.
+
+Known Issues
+
+The manual compendium movement list is currently non-functional (under investigation).
+Tabs do not persist their open/closed state and reset to defaults on each load.
