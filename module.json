@@ -2,7 +2,12 @@
   "id": "aplopean-banner-manager",
   "title": "Aplopean Banner Manager",
   "description": "<p>Transform your compendium sidebar with a images. Assign custom banners to your World, Module, or System compendiums.</p>",
-  "version": "1.0.0",
+   "version": "2.35.1",
+    "url": "https://github.com/Aelanea/Aplopean-Banner-Manager",
+    "readme": "https://github.com/Aelanea/Aplopean-Banner-Manager/blob/main/README.md",
+    "manifest": "https://github.com/Aelanea/Aplopean-Banner-Manager/blob/main/module.json",
+    "download": "https://github.com/Aelanea/Aplopean-Banner-Manager/releases/download/1.0.1/module.zip",
+    "changelog": "https://github.com/Aelanea/Aplopean-Banner-Manager/blob/main/CHANGELOG.md",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -17,6 +22,5 @@
   "scripts": [
     "scripts/banner-manager.js"
   ],
-  "manifest": "modules/aplopean-banner-manager/module.json",
   "flags": {}
 }
