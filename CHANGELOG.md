@@ -8,7 +8,7 @@
 ### Known Issues
 - None
 
-## [1.0.0] - 2025-10-1
+## [1.0.0] - 2025-10-21
 
 ### Added
 - Initial release.
