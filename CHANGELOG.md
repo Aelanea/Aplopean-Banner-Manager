@@ -1,3 +1,13 @@
+## [1.1] - 2026-08-20
+
+### Fixed
+- Update module to the latest foundry version 14.367
+- Polished the visuals of the module
+- Gifs can now be added as banners
+
+### Known Issues
+- None
+
 ## [1.0.1] - 2025-10-22
 
 ### Fixed
