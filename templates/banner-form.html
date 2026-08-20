@@ -1,202 +1,1525 @@
 <form class="abm-form">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════════════ -->
+
   <header class="abm-header">
-    <h2>Aplopean Banner Manager</h2>
-    <p>Assign custom banners to your compendiums. Use <strong>the Folder Icon</strong> to pick images, then <strong>Save</strong>, the red button restarts the image to the original one, needs f5 to apply.</p>
+
+    <div class="abm-header-emblem">
+      <i class="fas fa-scroll"></i>
+    </div>
+
+    <div class="abm-header-content">
+      <div class="abm-eyebrow">APLOPEAN ARCHIVES</div>
+      <h1>Banner Manager</h1>
+      <p>
+        Configure the visual identity of your compendium archives.
+      </p>
+    </div>
+
+    <div class="abm-header-mark">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
   </header>
 
-  {{#each sections}}
-  <button type="button" class="toggle-section" data-target="{{id}}">
-    <span>{{label}} ({{packs.length}})</span>
-    <i class="fas fa-chevron-down"></i>
-  </button>
 
-  <div id="{{id}}" class="section-content">
-    {{#if packs.length}}
-      {{#each packs}}
-      <div class="banner-row" data-pack="{{id}}">
-        <div class="pack-label">{{label}}</div>
-        <div class="pack-controls">
-          <input type="text" name="{{id}}" value="{{current}}" placeholder="path/to/banner.png">
-          <select class="class-override" name="{{id}}__override" data-pack="{{id}}">
-            <option value="Auto" {{#if (eq override "Auto")}}selected{{/if}}>Auto</option>
-            <option value="World" {{#if (eq override "World")}}selected{{/if}}>World</option>
-            <option value="Module" {{#if (eq override "Module")}}selected{{/if}}>Module</option>
-            <option value="System" {{#if (eq override "System")}}selected{{/if}}>System</option>
-          </select>
-          <button type="button" class="file-picker" data-target="{{id}}">
-            <i class="fas fa-folder-open"></i>
-          </button>
-          <button type="button" class="reset-btn" data-target="{{id}}">
-            <i class="fas fa-undo"></i>
-          </button>
-          <img src="{{current}}" class="banner-preview" onerror="this.style.display='none'">
+  <!-- ═══════════════════════════════════════════════════════════
+       ARCHIVE SECTIONS
+  ═══════════════════════════════════════════════════════════ -->
+
+  <div class="abm-archives">
+
+    {{#each sections}}
+
+      <section class="archive-section">
+
+        <!-- Section Header -->
+
+        <button
+          type="button"
+          class="toggle-section archive-section-header"
+          data-target="{{id}}"
+        >
+
+          <div class="archive-section-title">
+
+            <div class="archive-section-icon">
+              {{#if (eq id "world")}}
+                <i class="fas fa-globe"></i>
+              {{else if (eq id "module")}}
+                <i class="fas fa-cubes"></i>
+              {{else}}
+                <i class="fas fa-cog"></i>
+              {{/if}}
+            </div>
+
+            <div>
+              <div class="archive-section-name">
+                {{label}}
+              </div>
+
+              <div class="archive-section-subtitle">
+                {{#if (eq id "world")}}
+                  Archives belonging to this world
+                {{else if (eq id "module")}}
+                  Archives provided by modules
+                {{else}}
+                  Archives provided by the game system
+                {{/if}}
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="archive-section-meta">
+
+            <span class="archive-count">
+              {{packs.length}}
+              {{#if (eq packs.length 1)}}
+                COMPENDIUM
+              {{else}}
+                COMPENDIUMS
+              {{/if}}
+            </span>
+
+            <span class="archive-chevron">
+              <i class="fas {{#if isOpen}}fa-chevron-down{{else}}fa-chevron-right{{/if}}"></i>
+            </span>
+
+          </div>
+
+        </button>
+
+
+        <!-- Section Contents -->
+
+        <div
+          id="{{id}}"
+          class="section-content archive-grid"
+          {{#unless isOpen}}style="display:none;"{{/unless}}
+        >
+
+          {{#if packs.length}}
+
+            {{#each packs}}
+
+              <article
+                class="banner-row archive-card {{#unless isAuto}}override-set{{/unless}}"
+                data-pack="{{id}}"
+              >
+
+                <!-- Banner -->
+
+                <div class="archive-card-banner">
+
+                  {{#if current}}
+
+                    <img
+                      src="{{current}}"
+                      class="banner-preview"
+                      alt="{{label}} banner"
+                      onerror="this.style.display='none'; this.parentElement.classList.add('no-image');"
+                    >
+
+                    <div class="banner-overlay"></div>
+
+                  {{else}}
+
+                    <div class="banner-placeholder">
+                      <i class="fas fa-image"></i>
+                      <span>NO BANNER</span>
+                    </div>
+
+                  {{/if}}
+
+
+                  <div class="archive-card-banner-top">
+
+                    <span class="archive-card-id">
+                      {{id}}
+                    </span>
+
+                    {{#unless isAuto}}
+                      <span class="override-indicator">
+                        <i class="fas fa-thumbtack"></i>
+                        OVERRIDE
+                      </span>
+                    {{/unless}}
+
+                  </div>
+
+                </div>
+
+
+                <!-- Card Body -->
+
+                <div class="archive-card-body">
+
+                  <div class="archive-card-heading">
+
+                    <div class="archive-card-icon">
+                      <i class="fas fa-book"></i>
+                    </div>
+
+                    <div class="archive-card-name-wrapper">
+                      <div class="archive-card-name">
+                        {{label}}
+                      </div>
+
+                      <div class="archive-card-type">
+                        COMPENDIUM ARCHIVE
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                  <!-- Banner Path -->
+
+                  <div class="field-label">
+                    <span>BANNER PATH</span>
+                    <i class="fas fa-link"></i>
+                  </div>
+
+                  <div class="path-control">
+
+                    <input
+                      type="text"
+                      name="{{id}}"
+                      value="{{current}}"
+                      placeholder="path/to/banner.png"
+                    >
+
+                    <button
+                      type="button"
+                      class="file-picker icon-button picker-button"
+                      data-target="{{id}}"
+                      title="Choose banner"
+                    >
+                      <i class="fas fa-folder-open"></i>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="reset-btn icon-button reset-button"
+                      data-target="{{id}}"
+                      title="Reset banner"
+                    >
+                      <i class="fas fa-undo"></i>
+                    </button>
+
+                  </div>
+
+
+                  <!-- Classification -->
+
+                  <div class="field-label classification-label">
+                    <span>CLASSIFICATION</span>
+                    <i class="fas fa-layer-group"></i>
+                  </div>
+
+                  <div class="classification-control">
+
+                    <select
+                      class="class-override"
+                      name="{{id}}__override"
+                      data-pack="{{id}}"
+                    >
+
+                      <option
+                        value="Auto"
+                        {{#if isAuto}}selected{{/if}}
+                      >
+                        Auto
+                      </option>
+
+                      <option
+                        value="World"
+                        {{#if isWorld}}selected{{/if}}
+                      >
+                        World
+                      </option>
+
+                      <option
+                        value="Module"
+                        {{#if isModule}}selected{{/if}}
+                      >
+                        Module
+                      </option>
+
+                      <option
+                        value="System"
+                        {{#if isSystem}}selected{{/if}}
+                      >
+                        System
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                </div>
+
+              </article>
+
+            {{/each}}
+
+          {{else}}
+
+            <div class="no-packs archive-empty">
+
+              <div class="empty-icon">
+                <i class="fas fa-box-open"></i>
+              </div>
+
+              <div class="empty-title">
+                EMPTY ARCHIVE
+              </div>
+
+              <div class="empty-description">
+                No compendiums have been found in this category.
+              </div>
+
+            </div>
+
+          {{/if}}
+
         </div>
-      </div>
-      {{/each}}
-    {{else}}
-      <div class="no-packs">No compendiums found in this section.</div>
-    {{/if}}
+
+      </section>
+
+    {{/each}}
+
   </div>
-  {{/each}}
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════ -->
 
   <footer class="abm-footer">
-    <button type="submit">Save</button>
+
+    <div class="footer-status">
+      <span class="status-dot"></span>
+      <span>ARCHIVE CONFIGURATION</span>
+    </div>
+
+    <button
+      type="submit"
+      class="save-button"
+    >
+      <i class="fas fa-save"></i>
+      <span>SAVE CHANGES</span>
+    </button>
+
   </footer>
+
 </form>
 
+
 <style>
-/* Container & Header */
+
+/* ═══════════════════════════════════════════════════════════════
+   ROOT
+═══════════════════════════════════════════════════════════════ */
+
 .abm-form {
-  font-family: "Inter","Roboto","Helvetica",sans-serif;
+  --abm-bg: #0a101b;
+  --abm-bg-deep: #070c14;
+  --abm-panel: #101a29;
+  --abm-panel-light: #152238;
+  --abm-panel-hover: #192942;
+
+  --abm-gold: #d9a441;
+  --abm-gold-bright: #f2c66d;
+  --abm-gold-dark: #8d6827;
+
+  --abm-blue: #4db5df;
+  --abm-blue-dark: #28627d;
+
+  --abm-text: #e8e3d8;
+  --abm-text-soft: #9ca6b5;
+  --abm-text-muted: #626d7c;
+
+  --abm-border: rgba(217, 164, 65, 0.18);
+  --abm-border-soft: rgba(255, 255, 255, 0.06);
+
+  box-sizing: border-box;
+
+  width: 100%;
+  min-height: 100%;
+
+  padding: 0;
+
   display: flex;
   flex-direction: column;
-  gap: 0.9em;
-  width: 100%;
-  background: #0f1a2b; /* Dark bluish background */
-  padding: 1em 1.2em;
-  border-radius: 12px;
-}
-.abm-header h2 {
-  color: #4dc1ff; /* celestial blue */
-  font-size: 1.9em;
-  margin: 0 0 0.3em 0;
-  text-align: center;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-.abm-header p {
-  color: #ffffff;
-  font-size: 1em;
-  text-align: center;
-  margin: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(56, 101, 139, 0.22),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(217, 164, 65, 0.07),
+      transparent 35%
+    ),
+    var(--abm-bg);
+
+  color: var(--abm-text);
+
+  font-family:
+    "Inter",
+    "Roboto",
+    "Helvetica Neue",
+    sans-serif;
+
+  overflow: hidden;
 }
 
-/* Sections */
-.toggle-section {
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════════════════ */
+
+.abm-header {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  min-height: 105px;
+
+  padding: 1.25em 1.5em;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(25, 43, 68, 0.95),
+      rgba(9, 16, 28, 0.98)
+    );
+
+  border-bottom: 1px solid var(--abm-border);
+
+  overflow: hidden;
+}
+
+
+/* Decorative line */
+
+.abm-header::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--abm-gold-dark),
+      var(--abm-gold),
+      var(--abm-gold-dark),
+      transparent
+    );
+
+  opacity: 0.65;
+}
+
+
+/* Header emblem */
+
+.abm-header-emblem {
+  width: 58px;
+  height: 58px;
+
+  flex: 0 0 58px;
+
+  margin-right: 1em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--abm-gold-bright);
+
+  font-size: 1.45em;
+
+  border:
+    1px solid
+    rgba(217, 164, 65, 0.4);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(217, 164, 65, 0.14),
+      rgba(217, 164, 65, 0.02)
+    );
+
+  box-shadow:
+    inset 0 0 20px rgba(217, 164, 65, 0.06),
+    0 0 20px rgba(0, 0, 0, 0.3);
+
+  transform: rotate(45deg);
+}
+
+
+/* Counter-rotate icon */
+
+.abm-header-emblem i {
+  transform: rotate(-45deg);
+}
+
+
+/* Header text */
+
+.abm-header-content {
+  position: relative;
+  z-index: 2;
+}
+
+.abm-eyebrow {
+  margin-bottom: 0.25em;
+
+  color: var(--abm-gold);
+
+  font-size: 0.65em;
+  font-weight: 700;
+
+  letter-spacing: 0.28em;
+}
+
+.abm-header h1 {
+  margin: 0;
+
+  color: #f4f1e9;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 1.85em;
+  font-weight: 600;
+
+  letter-spacing: 0.025em;
+}
+
+.abm-header p {
+  margin: 0.25em 0 0;
+
+  color: var(--abm-text-soft);
+
+  font-size: 0.82em;
+}
+
+
+/* Decorative right mark */
+
+.abm-header-mark {
+  position: absolute;
+
+  right: 2em;
+  top: 50%;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  transform: translateY(-50%);
+}
+
+.abm-header-mark span {
+  display: block;
+
+  width: 3px;
+  height: 28px;
+
+  background: var(--abm-gold);
+
+  opacity: 0.25;
+
+  transform: skewX(-20deg);
+}
+
+.abm-header-mark span:nth-child(2) {
+  height: 42px;
+  opacity: 0.5;
+}
+
+.abm-header-mark span:nth-child(3) {
+  height: 20px;
+  opacity: 0.18;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ARCHIVES
+═══════════════════════════════════════════════════════════════ */
+
+.abm-archives {
+  flex: 1;
+
+  padding: 1.25em 1.4em;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--abm-gold-dark)
+    var(--abm-bg-deep);
+}
+
+
+/* Scrollbar */
+
+.abm-archives::-webkit-scrollbar {
+  width: 7px;
+}
+
+.abm-archives::-webkit-scrollbar-track {
+  background: var(--abm-bg-deep);
+}
+
+.abm-archives::-webkit-scrollbar-thumb {
+  background: var(--abm-gold-dark);
+  border-radius: 10px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION
+═══════════════════════════════════════════════════════════════ */
+
+.archive-section {
+  margin-bottom: 1.15em;
+}
+
+.archive-section:last-child {
+  margin-bottom: 0;
+}
+
+
+/* Section button */
+
+.archive-section-header {
+  position: relative;
+
   width: 100%;
-  padding: 0.65em 1em;
-  background: linear-gradient(90deg, #1b2638, #22304d);
-  color: #ffb347;
-  font-weight: bold;
-  border: none;
+
+  padding: 0.85em 1em;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px solid var(--abm-border);
+
   border-radius: 8px;
+
+  background:
+    linear-gradient(
+      100deg,
+      rgba(20, 34, 54, 0.98),
+      rgba(12, 21, 35, 0.98)
+    );
+
+  color: var(--abm-text);
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  text-align: left;
+}
+
+.archive-section-header:hover {
+  border-color:
+    rgba(217, 164, 65, 0.42);
+
+  background:
+    linear-gradient(
+      100deg,
+      rgba(27, 45, 70, 1),
+      rgba(14, 25, 41, 1)
+    );
+
+  transform: translateY(-1px);
+}
+
+
+/* Gold edge */
+
+.archive-section-header::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+
+  width: 3px;
+
+  border-radius: 0 3px 3px 0;
+
+  background: var(--abm-gold);
+
+  box-shadow:
+    0 0 10px rgba(217, 164, 65, 0.25);
+}
+
+
+/* Section title */
+
+.archive-section-title {
+  display: flex;
+  align-items: center;
+
+  gap: 0.8em;
+}
+
+.archive-section-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 6px;
+
+  color: var(--abm-gold);
+
+  background:
+    rgba(217, 164, 65, 0.08);
+
+  border:
+    1px solid
+    rgba(217, 164, 65, 0.18);
+
+  font-size: 0.9em;
+}
+
+.archive-section-name {
+  color: #f1eee7;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.archive-section-subtitle {
+  margin-top: 2px;
+
+  color: var(--abm-text-muted);
+
+  font-size: 0.68em;
+
+  letter-spacing: 0.04em;
+}
+
+
+/* Section metadata */
+
+.archive-section-meta {
+  display: flex;
+  align-items: center;
+
+  gap: 0.9em;
+}
+
+.archive-count {
+  padding: 0.35em 0.65em;
+
+  border-radius: 4px;
+
+  color: var(--abm-gold);
+
+  background:
+    rgba(217, 164, 65, 0.07);
+
+  border:
+    1px solid
+    rgba(217, 164, 65, 0.12);
+
+  font-size: 0.58em;
+  font-weight: 700;
+
+  letter-spacing: 0.09em;
+}
+
+.archive-chevron {
+  color: var(--abm-text-muted);
+
+  font-size: 0.75em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GRID
+═══════════════════════════════════════════════════════════════ */
+
+.archive-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(360px, 1fr));
+
+  gap: 0.9em;
+
+  margin-top: 0.8em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD
+═══════════════════════════════════════════════════════════════ */
+
+.archive-card {
+  min-width: 0;
+
+  overflow: hidden;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #121e30,
+      #0d1624
+    );
+
+  border:
+    1px solid
+    var(--abm-border-soft);
+
+  box-shadow:
+    0 5px 18px rgba(0, 0, 0, 0.25);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.archive-card:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(217, 164, 65, 0.3);
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(217, 164, 65, 0.03);
+}
+
+
+/* Override state */
+
+.archive-card.override-set {
+  border-color:
+    rgba(217, 164, 65, 0.4);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD BANNER
+═══════════════════════════════════════════════════════════════ */
+
+.archive-card-banner {
+  position: relative;
+
+  height: 118px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #17263a,
+      #0b121e
+    );
+
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.05);
+}
+
+
+/* Banner image */
+
+.banner-preview {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  opacity: 0.85;
+
+  transition:
+    transform 0.5s ease,
+    opacity 0.3s ease;
+}
+
+.archive-card:hover .banner-preview {
+  transform: scale(1.04);
+  opacity: 0.95;
+}
+
+
+/* Image overlay */
+
+.banner-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(5, 10, 17, 0.1),
+      rgba(5, 10, 17, 0.78)
+    );
+}
+
+
+/* No image */
+
+.banner-placeholder {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.45em;
+
+  color: var(--abm-text-muted);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(77, 181, 223, 0.06),
+      transparent 65%
+    );
+}
+
+.banner-placeholder i {
+  font-size: 1.6em;
+
+  opacity: 0.45;
+}
+
+.banner-placeholder span {
+  font-size: 0.55em;
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+}
+
+
+/* Banner top information */
+
+.archive-card-banner-top {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  top: 0;
+
+  padding: 0.65em;
+
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  transition: all 0.2s;
+  align-items: flex-start;
 }
-.toggle-section:hover { filter: brightness(1.08); }
 
-.section-content { display: flex; flex-direction: column; gap: 0.7em; margin-top: 0.5em; }
+.archive-card-id {
+  max-width: 70%;
 
-/* Banner Row */
-.banner-row {
+  padding: 0.3em 0.5em;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  background:
+    rgba(5, 10, 17, 0.55);
+
+  border-radius: 3px;
+
+  font-family: monospace;
+
+  font-size: 0.58em;
+}
+
+.override-indicator {
+  padding: 0.3em 0.5em;
+
+  color: var(--abm-gold-bright);
+
+  background:
+    rgba(31, 23, 10, 0.78);
+
+  border:
+    1px solid
+    rgba(217, 164, 65, 0.3);
+
+  border-radius: 3px;
+
+  font-size: 0.53em;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.override-indicator i {
+  margin-right: 0.3em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD BODY
+═══════════════════════════════════════════════════════════════ */
+
+.archive-card-body {
+  padding: 0.9em;
+}
+
+
+/* Heading */
+
+.archive-card-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 0.65em;
+
+  margin-bottom: 0.85em;
+}
+
+.archive-card-icon {
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 5px;
+
+  color: var(--abm-blue);
+
+  background:
+    rgba(77, 181, 223, 0.07);
+
+  border:
+    1px solid
+    rgba(77, 181, 223, 0.15);
+
+  font-size: 0.78em;
+}
+
+.archive-card-name-wrapper {
+  min-width: 0;
+}
+
+.archive-card-name {
+  overflow: hidden;
+
+  color: #eeeae1;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 0.95em;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.archive-card-type {
+  margin-top: 2px;
+
+  color: var(--abm-text-muted);
+
+  font-size: 0.55em;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FIELD LABELS
+═══════════════════════════════════════════════════════════════ */
+
+.field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 0.3em;
+
+  color: var(--abm-text-muted);
+
+  font-size: 0.55em;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+.field-label i {
+  color: var(--abm-gold-dark);
+
+  font-size: 0.9em;
+}
+
+.classification-label {
+  margin-top: 0.7em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PATH CONTROL
+═══════════════════════════════════════════════════════════════ */
+
+.path-control {
+  display: flex;
+
+  gap: 0.35em;
+}
+
+.path-control input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 34px;
+
+  padding:
+    0.35em 0.55em;
+
+  box-sizing: border-box;
+
+  color: #cfd5dd;
+
+  background:
+    #090f18;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  border-radius: 5px;
+
+  font-family: monospace;
+
+  font-size: 0.68em;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.path-control input::placeholder {
+  color: #4c5665;
+}
+
+.path-control input:focus {
+  outline: none;
+
+  border-color:
+    rgba(217, 164, 65, 0.5);
+
+  box-shadow:
+    0 0 0 2px
+    rgba(217, 164, 65, 0.08);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ICON BUTTONS
+═══════════════════════════════════════════════════════════════ */
+
+.icon-button {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 5px;
+
+  border: 1px solid transparent;
+
+  cursor: pointer;
+
+  transition:
+    filter 0.15s,
+    transform 0.15s,
+    border-color 0.15s;
+}
+
+.icon-button:hover {
+  filter: brightness(1.15);
+
+  transform: translateY(-1px);
+}
+
+.icon-button:active {
+  transform: translateY(0);
+}
+
+.picker-button {
+  color: #0b1119;
+
+  background:
+    var(--abm-gold);
+
+  border-color:
+    var(--abm-gold-bright);
+}
+
+.reset-button {
+  color: #e6b0b0;
+
+  background:
+    rgba(125, 27, 27, 0.55);
+
+  border-color:
+    rgba(190, 65, 65, 0.25);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CLASSIFICATION
+═══════════════════════════════════════════════════════════════ */
+
+.classification-control {
+  position: relative;
+}
+
+.classification-control::after {
+  content: "\f078";
+
+  position: absolute;
+
+  right: 0.75em;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: var(--abm-gold);
+
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+
+  font-size: 0.65em;
+
+  pointer-events: none;
+}
+
+.class-override {
+  width: 100%;
+  height: 32px;
+
+  padding: 0 2em 0 0.65em;
+
+  appearance: none;
+
+  color: #cdd4df;
+  background: #0a111c;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 5px;
+
+  font-size: 0.68em;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.class-override:focus {
+  outline: none;
+
+  border-color: rgba(217, 164, 65, 0.45);
+
+  box-shadow:
+    0 0 0 2px rgba(217, 164, 65, 0.07);
+}
+
+
+/* Dropdown options */
+
+.class-override option {
+  color: #e8e3d8;
+  background: #101a29;
+
+  font-size: 1rem;
+}
+
+
+/* Selected option */
+
+.class-override option:checked {
+  color: #111820;
+  background: #d9a441;
+}
+
+
+/* Hovered option */
+
+.class-override option:hover {
+  color: #111820;
+  background: #f2c66d;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   EMPTY
+═══════════════════════════════════════════════════════════════ */
+
+.archive-empty {
+  grid-column: 1 / -1;
+
+  min-height: 140px;
+
   display: flex;
   flex-direction: column;
-  gap: 0.45em;
-  padding: 0.65em;
-  border-radius: 10px;
-  background: #1c2a44;
-  border: 1px solid #333;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.35);
-  transition: all 0.25s;
-}
-.banner-row:hover {
-  background: #25355b;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.45);
-}
-.pack-label { font-weight: 600; color: #eee; font-size: 1em; }
 
-/* Controls Flex */
-.pack-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5em;
   align-items: center;
-}
-.pack-controls input[type=text] {
-  flex: 1;
-  min-width: 140px;
-  padding: 0.45em 0.7em;
-  border-radius: 6px;
-  border: 1px solid #444;
-  background: #1e2a3a;
-  color: #fff;
-  font-size: 0.95em;
-  transition: border 0.2s;
-}
-.pack-controls input:focus {
-  outline: none;
-  border-color: #ffb347;
-  box-shadow: 0 0 0 3px rgba(255,179,71,0.2);
-}
-.pack-controls select {
-  padding: 0.38em 0.55em;
-  border-radius: 6px;
-  background: #ffb347;
-  color: #000;
-  border: 1px solid #555;
-}
-.pack-controls select:focus {
-  outline: none;
-  border-color: #ffb347;
-  box-shadow: 0 0 0 2px rgba(255,179,71,0.12);
-}
-.pack-controls button {
-  width: 36px;
-  height: 36px;
-  display: flex;
   justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-  font-weight: bold;
-  border: none;
-  transition: all 0.15s;
-}
-.pack-controls button:hover { filter: brightness(1.12); cursor: pointer; }
-.file-picker { background: #ffb347; color: #111; }
-.reset-btn { background: #880000; color: #fff; }
-.pack-controls button i { font-size: 1.1em; }
 
-/* Preview Image */
-.banner-preview {
-  height: 70px;
-  border-radius: 6px;
-  border: 1px solid #555;
-  object-fit: cover;
-  display: block;
-  transition: all 0.25s ease;
-}
+  gap: 0.35em;
 
-/* No Packs */
-.no-packs {
-  padding: 0.8em;
+  background:
+    rgba(12, 20, 33, 0.7);
+
+  border:
+    1px dashed
+    rgba(255, 255, 255, 0.08);
+
   border-radius: 8px;
-  background: #1c2a44;
-  color: #aaa;
-  border: 1px dashed #333;
-  text-align: center;
-  font-size: 0.95em;
 }
 
-/* Footer */
+.empty-icon {
+  color: var(--abm-text-muted);
+
+  font-size: 1.5em;
+
+  opacity: 0.5;
+}
+
+.empty-title {
+  color: var(--abm-text-soft);
+
+  font-size: 0.65em;
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+}
+
+.empty-description {
+  color: var(--abm-text-muted);
+
+  font-size: 0.65em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════════ */
+
 .abm-footer {
+  min-height: 62px;
+
+  padding:
+    0.75em 1.4em;
+
+  box-sizing: border-box;
+
   display: flex;
-  justify-content: flex-end;
-  margin-top: 1em;
+  align-items: center;
+  justify-content: space-between;
+
+  background:
+    linear-gradient(
+      to top,
+      #080e17,
+      #0d1725
+    );
+
+  border-top:
+    1px solid
+    var(--abm-border);
+
+  box-shadow:
+    0 -6px 20px
+    rgba(0, 0, 0, 0.2);
 }
-.abm-footer button {
-  padding: 0.75em 1.4em;
-  border-radius: 10px;
-  background: #350c67;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  font-size: 1.05em;
-  box-shadow: 0 3px 7px rgba(0,0,0,0.35);
-  transition: all 0.2s;
+
+
+/* Footer status */
+
+.footer-status {
+  display: flex;
+  align-items: center;
+
+  gap: 0.5em;
+
+  color: var(--abm-text-muted);
+
+  font-size: 0.55em;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
 }
-.abm-footer button:hover { filter: brightness(1.1); }
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--abm-blue);
+
+  box-shadow:
+    0 0 8px
+    rgba(77, 181, 223, 0.65);
+}
+
+
+/* Save */
+
+.save-button {
+  height: 38px;
+
+  padding:
+    0 1.2em;
+
+  display: flex;
+  align-items: center;
+
+  gap: 0.55em;
+
+  color: #111820;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--abm-gold-bright),
+      var(--abm-gold)
+    );
+
+  border:
+    1px solid
+    #f4ce82;
+
+  border-radius: 6px;
+
+  font-size: 0.7em;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 3px 10px
+    rgba(0, 0, 0, 0.3);
+
+  transition:
+    filter 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.save-button:hover {
+  filter: brightness(1.08);
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 15px
+    rgba(0, 0, 0, 0.4),
+    0 0 15px
+    rgba(217, 164, 65, 0.12);
+}
+
+.save-button:active {
+  transform: translateY(0);
+}
+
+.save-button i {
+  font-size: 0.9em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+
+  .archive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .abm-header-mark {
+    display: none;
+  }
+
+  .archive-section-subtitle {
+    display: none;
+  }
+
+  .archive-count {
+    display: none;
+  }
+
+}
+
 </style>
